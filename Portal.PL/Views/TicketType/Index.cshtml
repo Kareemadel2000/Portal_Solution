@@ -1,0 +1,197 @@
+﻿@using Portal.Application.Errors_Handler_Helper.Features.TicketType.Queries.GetAllTicketTypes
+@{
+    ViewData["Title"] = "Index";
+    ViewData["ControllerName"] = "TicketType";
+}
+
+<!-- Basic Table -->
+<p id="nameError" class="text-center form-control hidden"></p>
+
+<div class="demo-google-material-icon">
+    <button type="button" id="btn_new" class="btn btn-primary waves-effect" data-toggle="modal" data-target="#basicModal"><i class="material-icons">add_circle</i> Add New Type</button>
+</div>
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="header">
+                <h2>
+                    Tickets Types TABLE
+                </h2>
+            </div>
+            <div class="body table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>TypeName</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                        @foreach (GetAllTicketTypesResponseDto item in ViewBag.data)
+                        {
+                            <tr>
+
+                                <td>@item.TypeName</td>
+                                <td><button type="button" id="Edit" class="btn btn-success waves-effect" data-toggle="modal" data-target="#basicModal" onclick="getEdit(@item.Id)"><i class="material-icons">mode_edit</i></button></td>
+                                <td><button type="button" id="Delete" class="btn btn-danger waves-effect" onclick="Delete(@item.Id)"><i class="material-icons">delete</i></button></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Add New Type</h4>
+            </div>
+            <div class="modal-body">
+                <input hidden id="typeId" />
+                <div class="form-group">
+                    <input class="form-control" id="typeName" placeholder="Enter Type Name ...." />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+        $(document).ready(function () {
+
+            $("#btn_new").on("click", function () {
+                $("#typeName").val(null);
+                $("#typeId").val(null)
+            })
+
+            $("#save").on("click", function () {
+                let met = "";
+                let ac = "";
+                if ($("#typeId").val() == null || $("#typeId").val() == 0) {
+                    met = "Post";
+                    ac = "Create";
+                }
+                else {
+                    met = "Put";
+                    ac = "Update";
+                }
+                var obj = {};
+                if (Validation($("#typeName").val()) === false) {
+                    return;
+                }
+                else {
+                    obj.id = $("#typeId").val();
+                    obj.typeName = $("#typeName").val();
+                    $.ajax({
+                        method: met,
+                        url: `/TicketType/${ac}`,
+                        contentType: "application/json",
+                        data: JSON.stringify(obj),
+                        success: function (response) {
+                            //console.log(response);
+                            //$("#typeName").val('');
+                            //$("#typeId").val('');
+                            //$("#basicModal").fadeOut();
+                            //var row = `
+                            //                                 <tr>
+                            //                                    <td>${response.value.typeName}</td>
+                            //                                    <td><button type="button" class="btn btn-success waves-effect" onclick="getEdit(${response.value.id})" data-toggle="modal" data-target="#basicModal""><i class="material-icons">mode_edit</i></button></td>
+                            //                                        <td><button type="button" class="btn btn-danger waves-effect js-delete" data-id="${response.value.id}"><i class="material-icons">delete</i></button></td>
+                            //                                        </tr>
+                            //                                        `;
+                            //$("#tbody").append(row);
+                            getAll();
+                        },
+                        error: function (error) {
+                            $("#nameError").removeClass("hidden");
+                            $("#nameError").text(error.responseJSON.Errors[0]);
+                        }
+                    })
+                }
+
+            });
+
+
+
+            function Validation(name) {
+                if (name === null) {
+                    $("#nameError").removeAttr("hidden");
+                    $("#nameError").innerHtml = "Name Is Required";
+                    return false;
+                }
+                return true;
+            }
+        });
+
+        function getEdit(id) {
+            $.ajax({
+                method: "get",
+                url: "/TicketType/Ticket/" + id,
+                contentType: "application/json",
+                success: function (response) {
+                    console.log(response);
+                    $("#typeId").val(response.value.id);
+                    console.log($("#typeId").val());
+                    $("#typeName").val(response.value.typeName);
+                }
+            })
+        }
+
+        function getAll() {
+            $.ajax({
+                method: "get",
+                url: "/TicketType/GetAllTicketTypes",
+                contentType: "application/json",
+                success: function (Data) {
+                    $("#tbody").empty();
+                    $.each(Data, function (k, v) {
+                        var row = `
+                                                                     <tr>
+                                                                        <td>${v.typeName}</td>
+                                                                        <td><button type="button" class="btn btn-success waves-effect" onclick="getEdit(${v.id})" data-toggle="modal" data-target="#basicModal""><i class="material-icons">mode_edit</i></button></td>
+                                                                            <td><button type="button" class="btn btn-danger waves-effect js-delete" onclick="Delete(${v.id})"><i class="material-icons">delete</i></button></td>
+                                                                            </tr>
+                                                                            `;
+                        $("#tbody").append(row);
+                    });
+                }
+            });
+
+            //$("#Delete").on("click", function () {
+            //    var id = $(this).data("prim");
+            //    console.log(id);
+            //    Delete(id);
+            //})
+            
+        }
+
+        function Delete(id) {
+            $.ajax({
+                method: "Delete",
+                url: "/TicketType/Delete/" + id,
+                contentType: "application/json",
+                success: function (Data) {
+                    //$("#Delete").val(response.value.id);
+                    //console.log($("#Delete").val());
+                    //$("#Delete").val(response.value.typeName);
+                    getAll();
+                }
+            });
+        }
+        
+
+
+    </script>
+}

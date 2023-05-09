@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Portal.Application.ViewModels.TicketWithAttachmentViewModel>
+@using Portal.Domains.Entities
+
+@{
+    ViewData["Title"] = "Index";    
+}
+
+    <select id="ss">
+        <option value="@null">-- Select Filter --</option>
+        @foreach(var item in (List<TicketType>)ViewBag.Types)
+            {
+                <option value="@item.Id">@item.TypeName</option>
+            }
+    </select>
+    
+
+@section Scripts{ 
+    <script>
+        $(document).ready(function () {
+            $('#ss').change(function () {                
+                let x = this.value;
+                $.ajax({
+                    method: 'get',
+                    url: `https://localhost:7114/TicketWithAttachments/Index?ticketTypeId=${x}`
+                    })               
+            });
+        })
+    </script>
+}
+
+
+@foreach (var item in Model)
+{
+    <!-- Basic Card -->
+    <div class="row clearfix">
+        <div class="col-lg-offset-2 col-lg-6 col-md-offset-2 col-md-6 col-sm-6 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <div class="row">
+                        <h3 class="col-md-12 text-center">@item.Title</h3>                        
+                        <h3 class="col-md-12 text-center">@item.Status</h3>                        
+                    </div>                    
+                    <div class="JustifyCenter">
+                        <h3 class="text-center text-muted"> ----    Created By    ----</h3>
+                        UserName:     <h4>@item.UserName</h4>
+                        <br /><br />
+                        Email:        <h4>@item.Email</h4>
+                    </div>
+                </div>
+                <div class="body row">
+                    <div class="col-md-12 text-center">
+                        @item.Description
+                    </div>
+                    
+                    <div class="col-md-12 JustifyCenter">
+                        <h3 class="text-center text-muted">--       Attachments         --</h3>
+                    </div>
+
+                    @foreach (var img in item.AttachmentImageUrl)
+                    {
+                        <div class="col-md-4">
+                            <img src="~/imgs/attachments/@img" style="max-height: 100%; max-width: 100%;"/>
+                        </div>
+                    }
+                </div>
+                
+            </div>
+        </div>        
+    </div>
+}

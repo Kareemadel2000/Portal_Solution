@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewData["Title"] = "AddUser";
+}
+
+@model Portal.Application.Dtos.AddUserDto
+
+@if (ViewBag.Message != null)
+{
+    <div>
+        <p class="alert alert-success"> @ViewBag.Message </p>
+    </div>
+}
+
+<div class="signup-box">
+    <div class="card">
+        <div class="body">
+            <form id="sign_up" method="POST" asp-controller="Account" asp-action="AddUser">
+                <div class="msg">Register a new membership</div>
+
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <i class="material-icons">person</i>
+                    </span>
+                    <div class="form-line">
+                        <input type="text" class="form-control" asp-for="UserName" placeholder="Name Surname" required autofocus>
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <i class="material-icons">email</i>
+                    </span>
+                    <div class="form-line">
+                        <input type="email" class="form-control" asp-for="Email" placeholder="Email Address" required>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <i class="material-icons">lock</i>
+                    </span>
+                    <div class="form-line">
+                        <input type="text" class="form-control" asp-for="Password" minlength="6" placeholder="Password" required>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <i class="material-icons">lock</i>
+                    </span>
+                    <div class="form-line">
+                        <input type="text" class="form-control" asp-for="ConfirmPassword" minlength="6" placeholder="Confirm Password" required>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="form-line">
+                        <select asp-items="ViewBag.Roles" asp-for="RoleId" class="form-select">                            
+                        </select>
+                        <span asp-validation-for="RoleId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <input type="submit" value="Add User" class="btn btn-block btn-lg bg-pink waves-effect" />
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <!-- Jquery Core Js -->
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core Js -->
+    <script src="~/plugins/bootstrap/js/bootstrap.js"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="~/plugins/node-waves/waves.js"></script>
+
+    <!-- Validation Plugin Js -->
+    <script src="~/plugins/jquery-validation/jquery.validate.js"></script>
+
+    <!-- Custom Js -->
+    <script src="~/js/admin.js"></script>
+    <script src="~/js/pages/examples/sign-up.js"></script>
+}
+
+
