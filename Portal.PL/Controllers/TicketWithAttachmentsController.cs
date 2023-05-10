@@ -27,6 +27,7 @@ namespace Portal.PL.Controllers
             var ticketTypes = await _unitOfWork.Repository<TicketType>().GetAllAsync();            
             ViewBag.Types = ticketTypes;
 
+
             var ticketsSpec = ticketTypeId == null ? new TicketForUserByAccountIdSpecifications() : new TicketForUserByAccountIdSpecifications(ticketTypeId.Value);
             var tickets = await _unitOfWork.Repository<Ticket>().GetAllWithSpecificationsAsync(ticketsSpec);
 
