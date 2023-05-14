@@ -14,6 +14,9 @@ builder.Services.AddSwaggerDocumentation();
 builder.Services.AddApiErrorsServices();
 builder.Services.AddApiServices();
 
+//builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 app.UseMiddleware<ErrorHandlerMiddleware>();

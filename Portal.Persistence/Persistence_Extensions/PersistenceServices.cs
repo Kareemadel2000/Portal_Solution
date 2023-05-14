@@ -21,7 +21,8 @@ namespace Portal.Persistence.Persistence_Extensions
     {
         public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString(nameof(ApplicationDbContext))));
+            services.AddDbContext<ApplicationDbContext>(options => 
+            options.UseSqlServer(configuration.GetConnectionString(nameof(ApplicationDbContext))));
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));

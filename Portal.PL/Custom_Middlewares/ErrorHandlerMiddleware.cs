@@ -57,7 +57,7 @@ namespace Portal.Api.Custom_Middlewares
                 response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 ProblemDetails problemDetails = GetProblemDetails(ex);
 
-                ApiException apiException = new ApiException(problemDetails.Detail, problemDetails.Title);
+                ApiException apiException = new ApiException(problemDetails.Detail!, problemDetails.Title!);
 
                 await response.WriteAsync(JsonSerializer.Serialize(apiException));
             }
