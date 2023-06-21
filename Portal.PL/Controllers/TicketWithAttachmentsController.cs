@@ -28,10 +28,14 @@ namespace Portal.PL.Controllers
             ViewBag.Types = ticketTypes;
 
 
-            var ticketsSpec = ticketTypeId == null ? new TicketForUserByAccountIdSpecifications() : new TicketForUserByAccountIdSpecifications(ticketTypeId.Value);
+            var ticketsSpec = 
+                !ticketTypeId.HasValue ? new TicketForUserByAccountIdSpecifications() 
+                : new TicketForUserByAccountIdSpecifications(ticketTypeId.Value);
+
             var tickets = await _unitOfWork.Repository<Ticket>().GetAllWithSpecificationsAsync(ticketsSpec);
 
             List<TicketWithAttachmentViewModel>? model = new List<TicketWithAttachmentViewModel>();
+            model.Clear();
             foreach (var item in tickets)
             {
                 var user = await userManager.FindByIdAsync(item.UserId);

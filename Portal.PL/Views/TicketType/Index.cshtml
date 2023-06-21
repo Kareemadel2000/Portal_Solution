@@ -1,30 +1,30 @@
 ﻿@using Portal.Application.Errors_Handler_Helper.Features.TicketType.Queries.GetAllTicketTypes
 @{
-    ViewData["Title"] = "Index";
-    ViewData["ControllerName"] = "TicketType";
+    ViewData["Title"] = SharedLocalizer["Index"];
+    ViewData["ControllerName"] = SharedLocalizer["TicketType"];
 }
 
 <!-- Basic Table -->
 <p id="nameError" class="text-center form-control hidden"></p>
 
 <div class="demo-google-material-icon">
-    <button type="button" id="btn_new" class="btn btn-primary waves-effect" data-toggle="modal" data-target="#basicModal"><i class="material-icons">add_circle</i> Add New Type</button>
+    <button type="button" id="btn_new" class="btn btn-primary waves-effect" data-toggle="modal" data-target="#basicModal"><i class="material-icons">add_circle</i> @SharedLocalizer["AddNewType"]</button>
 </div>
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="header">
                 <h2>
-                    Tickets Types TABLE
+                    @SharedLocalizer["TicketsTypesTABLE"]
                 </h2>
             </div>
             <div class="body table-responsive">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>TypeName</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
+                            <th>@SharedLocalizer["TypeName"]</th>
+                            <th>@SharedLocalizer["Edit"]</th>
+                            <th>@SharedLocalizer["Delete"]</th>
                         </tr>
                     </thead>
                     <tbody id="tbody">
@@ -50,17 +50,17 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Add New Type</h4>
+                <h4 class="modal-title" id="myModalLabel">@SharedLocalizer["AddNewType"]</h4>
             </div>
             <div class="modal-body">
                 <input hidden id="typeId" />
                 <div class="form-group">
-                    <input class="form-control" id="typeName" placeholder="Enter Type Name ...." />
+                    <input class="form-control" id="typeName" placeholder=@SharedLocalizer["EnterTypeName...."] />
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="save" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">@SharedLocalizer["Close"]</button>
+                <button type="button" id="save" class="btn btn-primary" data-dismiss="modal">@SharedLocalizer["Savechanges"]</button>
             </div>
         </div>
     </div>

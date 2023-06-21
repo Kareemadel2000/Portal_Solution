@@ -19,48 +19,59 @@ namespace Portal.Api.Custom_Middlewares
         }
 
         public async Task Invoke(HttpContext context)
-        {            
-
-            try
-            {                
-                await _next(context);
-
-                if (context.Response.StatusCode == StatusCodes.Status401Unauthorized)
+        {
+            if (context.Request.Path.HasValue)
+            {
+                if (context.Request.Path.Value.Contains("api"))
                 {
-                    await GetUnAuthorizedProblemDetails(context);
-                    return;
+                    try
+                    {
+                        await _next(context);
+
+                        if (context.Response.StatusCode == StatusCodes.Status401Unauthorized)
+                        {
+                            await GetUnAuthorizedProblemDetails(context);
+                            return;
+                        }
+                    }
+                    catch (InvalidRequestException ex)
+                    {
+                        ApiValidationErrorResponse problemDetails = GetBadRequestProblemDetails(ex);
+
+                        var response = context.Response;
+                        response.ContentType = "application/json";
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+                        await response.WriteAsync(JsonSerializer.Serialize(problemDetails));
+                    }
+                    catch (ApiErrorResponse ex)
+                    {
+                        var response = context.Response;
+                        response.ContentType = "application/json";
+                        response.StatusCode = ex.StatusCode;
+
+                        ApiResponse apiResponse = new ApiResponse(ex.StatusCode, ex.Message);
+                        await response.WriteAsync(JsonSerializer.Serialize(apiResponse));
+                    }
+                    catch (Exception ex)
+                    {
+                        var response = context.Response;
+                        response.ContentType = "application/json";
+                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        ProblemDetails problemDetails = GetProblemDetails(ex);
+
+                        ApiException apiException = new ApiException(problemDetails.Detail!, problemDetails.Title!);
+
+                        await response.WriteAsync(JsonSerializer.Serialize(apiException));
+                    }
+                }
+                else
+                {
+                    await _next(context);
                 }
             }
-            catch (InvalidRequestException ex)
-            {
-                ApiValidationErrorResponse problemDetails = GetBadRequestProblemDetails(ex);
-
-                var response = context.Response;
-                response.ContentType = "application/json";
-                response.StatusCode = (int)HttpStatusCode.BadRequest;                     
-                                
-                await response.WriteAsync(JsonSerializer.Serialize(problemDetails));
-            }
-            catch (ApiErrorResponse ex)
-            {
-                var response = context.Response;
-                response.ContentType = "application/json";
-                response.StatusCode = ex.StatusCode;
-
-                ApiResponse apiResponse = new ApiResponse(ex.StatusCode, ex.Message);
-                await response.WriteAsync(JsonSerializer.Serialize(apiResponse));
-            }
-            catch (Exception ex) 
-            {
-                var response = context.Response;
-                response.ContentType = "application/json";
-                response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                ProblemDetails problemDetails = GetProblemDetails(ex);
-
-                ApiException apiException = new ApiException(problemDetails.Detail!, problemDetails.Title!);
-
-                await response.WriteAsync(JsonSerializer.Serialize(apiException));
-            }
+            
+            
         }
 
         private ApiValidationErrorResponse GetBadRequestProblemDetails(InvalidRequestException ex)

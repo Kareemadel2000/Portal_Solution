@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Portal.Domains.Enums;
+using Microsoft.Extensions.Localization;
+using Portal.PL.Language;
 using System.Security.Claims;
 
 namespace Portal.PL.Controllers
@@ -10,11 +10,13 @@ namespace Portal.PL.Controllers
     [Authorize]
     public class HomeController : Controller
     {
+        private readonly IStringLocalizer<SharedResource> sharedLocalizer;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public HomeController(UserManager<IdentityUser> userManager)
+        public HomeController(UserManager<IdentityUser> userManager, IStringLocalizer<SharedResource> sharedLocalizer)
         {
             _userManager = userManager;
+            this.sharedLocalizer = sharedLocalizer;
         }
 
         public async Task<IActionResult> Index()

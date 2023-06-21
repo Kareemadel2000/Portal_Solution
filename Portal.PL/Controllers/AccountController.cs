@@ -72,6 +72,8 @@ namespace Portal.PL.Controllers
         }
 
         #endregion
+
+        #region Login
         public IActionResult Login()
         {
             return View();
@@ -89,20 +91,23 @@ namespace Portal.PL.Controllers
             }
 
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
-            if(result.Succeeded)
+            if (result.Succeeded)
                 return RedirectToAction("Index", "Home");
 
             ModelState.AddModelError("", "Invalid UserName Or Password");
-            return View(model);            
+            return View(model);
         }
+        #endregion
 
+        #region LogOff
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> LogOff()
         {
-            await _signInManager.SignOutAsync();            
+            await _signInManager.SignOutAsync();
             return RedirectToAction(nameof(Login));
-        }
+        } 
+        #endregion
 
         #region Roles
         [Authorize(Roles = "SuperAdmin")]
