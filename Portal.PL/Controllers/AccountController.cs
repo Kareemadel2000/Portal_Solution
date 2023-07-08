@@ -43,27 +43,37 @@ namespace Portal.PL.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
-
-            var role = await _roleManager.FindByIdAsync(model.RoleId);
-            if(role == null)
+            if (!result.Succeeded)
             {
-                ModelState.AddModelError("", "Role Not Exist.");
+                foreach (var item in result.Errors)
+                {
+                    ModelState.AddModelError("", item.Description);
+                }
             }
             else
             {
-                result = await _userManager.AddToRoleAsync(user, role.Name!);
-                if (result.Succeeded)
-                {                    
-                    return RedirectToAction(nameof(AddUser), new {message = "User Added Successfully" });
+                var role = await _roleManager.FindByIdAsync(model.RoleId);
+                if (role == null)
+                {
+                    ModelState.AddModelError("", "Role Not Exist.");
                 }
                 else
                 {
-                    foreach (var item in result.Errors)
+                    result = await _userManager.AddToRoleAsync(user, role.Name!);
+                    if (result.Succeeded)
                     {
-                        ModelState.AddModelError("", item.Description);
+                        return RedirectToAction(nameof(AddUser), new { message = "User Added Successfully" });
+                    }
+                    else
+                    {
+                        foreach (var item in result.Errors)
+                        {
+                            ModelState.AddModelError("", item.Description);
+                        }
                     }
                 }
             }
+            
             
             var roles = await _roleManager.Roles.Where(x => x.Name != Roles.Client.ToString()).ToListAsync();
             ViewBag.Roles = new SelectList(roles, "Id", "Name");

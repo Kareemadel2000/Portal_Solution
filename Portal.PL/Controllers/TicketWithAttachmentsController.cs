@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Portal.Application.Contracts;
 using Portal.Application.Specifications.Ticket_Specifications;
@@ -12,7 +13,8 @@ using Portal.Domains.Enums;
 namespace Portal.PL.Controllers
 {
     [Authorize]
-    public class TicketWithAttachmentsController : Controller
+    
+    public class TicketWithAttachmentsController : Controller 
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser> userManager;
@@ -21,8 +23,8 @@ namespace Portal.PL.Controllers
             _unitOfWork = unitOfWork;
             this.userManager = userManager;
         }
-
-        public async Task<IActionResult> Index(int? ticketTypeId = null)
+        [HttpGet]
+        public async Task<IActionResult> Index([FromBody]int? ticketTypeId = null)
         {
             var ticketTypes = await _unitOfWork.Repository<TicketType>().GetAllAsync();            
             ViewBag.Types = ticketTypes;

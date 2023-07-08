@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ClinicDashboard.Mvc.Controllers
+namespace Portal.PL.Controllers.Api
 {
     public class LanguageController : Controller
     {

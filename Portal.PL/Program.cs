@@ -27,6 +27,15 @@ builder.Services.AddControllersWithViews()
 
 
 // Add services to the container.
+// Permission To Reject or Accept Ticket
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AcceptRejectTicketPolicy", policy =>
+        policy.RequireRole("SuperAdmin", "TicketAdmin"));
+});
+
+
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddPersistenceServices(builder.Configuration);
